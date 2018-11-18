@@ -9,11 +9,8 @@
  *                                                                            *
  ******************************************************************************/
 
-import CV8Platform
-import JavaScript
+import CV8
 import Platform
-
-@_exported import V8API
 
 public class JSRuntime {
     let platform: UnsafeMutableRawPointer
@@ -23,10 +20,6 @@ public class JSRuntime {
         return JSRuntime()
     }()
 
-    // The whole V8API & V8 split is caused
-    // by difference in the initialization
-    // between standalone v8 and node.js,
-    // so this way we can reuse the api
     public required init() {
         // used to load snapshot_blob, natives_blob, icudtl.dat
         let libsPath = Environment["NODE_PATH"] ?? "/usr/local/lib/"
@@ -40,14 +33,14 @@ public class JSRuntime {
     }
 }
 
-extension V8API.JSContext {
+extension V8.JSContext {
     public convenience init(_ runtime: JSRuntime = JSRuntime.global) {
         self.init(isolate: runtime.isolate)
     }
 }
 
 extension JSRuntime: JavaScript.JSRuntime {
-    public func createContext() -> V8API.JSContext {
+    public func createContext() -> V8.JSContext {
         return JSContext()
     }
 }

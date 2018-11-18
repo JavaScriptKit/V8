@@ -11,10 +11,9 @@
 
 import CV8
 import Platform
-@_exported import JavaScript
 
 private var swiftCallback: Void = {
-    CV8.swiftCallback = V8API.functionWrapper
+    CV8.swiftCallback = V8.functionWrapper
 }()
 
 private var functions: [Int32: ([JSValue]) throws -> Value] = [:]

@@ -14,6 +14,8 @@
 #include <v8.h>
 #include "c_v8.h"
 
+#include <libplatform/libplatform.h>
+
 using namespace v8;
 
 class GlobalValue {
@@ -51,6 +53,37 @@ private:
 };
 
 extern "C" {
+
+    // MARK: v8 specific
+
+    void* initialize(const char *exec_path) {
+        V8::InitializeICUDefaultLocation(exec_path);
+        v8::V8::InitializeExternalStartupData(exec_path);
+        auto platform = platform::CreateDefaultPlatform();
+        V8::InitializePlatform(platform);
+        V8::Initialize();
+        return platform;
+    }
+
+    void dispose(void* platform) {
+        V8::Dispose();
+        V8::ShutdownPlatform();
+        delete reinterpret_cast<Platform*>(platform);;
+    }
+
+    void* createIsolate() {
+        Isolate::CreateParams create_params;
+        create_params.array_buffer_allocator =
+        v8::ArrayBuffer::Allocator::NewDefaultAllocator();
+        return Isolate::New(create_params);
+    }
+
+    void disposeIsolate(void* isolate) {
+        reinterpret_cast<Isolate*>(isolate)->Dispose();
+    }
+
+    // MARK: shared with node
+    
     void* createTemplate(void* isolatePtr) {
         auto isolate = reinterpret_cast<Isolate*>(isolatePtr);
         Locker isolateLocker(isolate);

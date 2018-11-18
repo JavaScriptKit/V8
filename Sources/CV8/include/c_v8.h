@@ -19,6 +19,17 @@
 extern "C" {
 #endif
 
+    // MARK: v8 specific
+
+    // global
+    void * _Nonnull initialize(const char * _Nonnull exec_path);
+    void dispose(void * _Nonnull platform);
+    // isolate
+    void * _Nonnull createIsolate();
+    void disposeIsolate(void * _Nonnull isolate);
+
+    // MARK: shared with node
+
     // global template
     void * _Nonnull createTemplate(void * _Nonnull isolate);
     void disposeTemplate(void * _Nonnull context);

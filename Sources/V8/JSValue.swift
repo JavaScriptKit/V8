@@ -10,7 +10,6 @@
  ******************************************************************************/
 
 import CV8
-import JavaScript
 
 public class JSValue {
     let isolate: UnsafeMutableRawPointer

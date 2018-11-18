@@ -12,7 +12,7 @@
 import Test
 @testable import V8
 
-final class V8Tests: TestCase {
+final class JavaScriptTests: TestCase {
     func testEvaluate() {
         let context = JSContext()
         assertNoThrow(try context.evaluate("40 + 2"))

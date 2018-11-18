@@ -5,13 +5,11 @@ This package provides JavaScript APIs for several engines.
 ## Package Targets
 * JavaScipt - common protocols
 * V8 - google's v8 engine wrapper
-* JavaScriptCoreSwift - linux version of apple's JavaScriptCore
-* СhakraCore - microsoft's chakracore engine wrapper (WIP)
 
 ## Package.swift
 
 ```swift
-.package(url: "https://github.com/tris-foundation/javascript.git", .branch("master"))
+.package(url: "https://github.com/tris-foundation/javascript.git", .branch("v8"))
 ```
 
 ## Usage
@@ -33,16 +31,9 @@ assertEqual("\(result)", "result string")
 
 ### macOS
 
-#### V8
-
 ```bash
 brew install v8
 ```
-
-#### JavaScriptCore
-
-Works OOB
-
 #### SwiftPM arguments
 
 ```bash
@@ -65,8 +56,6 @@ swift test \
 
 ### Linux
 
-#### V8
-
 For full instructions follow https://v8.dev/docs/build
 ```bash
 git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git
@@ -77,11 +66,6 @@ gclient sync -r 7.0.276.28
 ./build/install-build-deps.sh #OMG
 gn gen --args="is_debug=false is_component_build=true v8_use_external_startup_data=false v8_enable_i18n_support=false" out.gn/x64.release
 ninja -j8 -C out.gn/x64.release -v d8
-```
-
-#### JavaScriptCore
-```bash
-apt install -y libjavascriptcoregtk-4.0-dev
 ```
 
 #### SwiftPM arguments
