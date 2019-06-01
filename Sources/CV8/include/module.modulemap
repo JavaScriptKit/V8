@@ -1,4 +1,7 @@
 module CV8 [system] {
     header "c_v8.h"
     export *
+    link "v8"
+    link "v8_libbase"
+    link "v8_libplatform"
 }
