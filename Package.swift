@@ -2,16 +2,19 @@
 import PackageDescription
 
 let package = Package(
-    name: "JavaScript",
+    name: "V8",
     products: [
-        .library(name: "JavaScript", targets: ["V8"]),
+        .library(name: "V8", targets: ["V8"]),
     ],
     dependencies: [
         .package(
-            url: "https://github.com/tris-foundation/platform.git",
+            url: "https://github.com/tris-code/platform.git",
             .branch("master")),
         .package(
-            url: "https://github.com/tris-foundation/test.git",
+            url: "https://github.com/tris-code/javascript.git",
+            .branch("master")),
+        .package(
+            url: "https://github.com/tris-code/test.git",
             .branch("master"))
     ],
     targets: [
@@ -21,11 +24,8 @@ let package = Package(
         .target(
             name: "V8",
             dependencies: ["CV8", "Platform", "JavaScript"]),
-        .target(
-            name: "JavaScript",
-            dependencies: []),
         .testTarget(
-            name: "JavaScriptTests",
+            name: "V8Tests",
             dependencies: ["Test", "V8"]),
     ],
     cxxLanguageStandard: .cxx11

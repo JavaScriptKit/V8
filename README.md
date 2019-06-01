@@ -1,15 +1,9 @@
-# JavaScript
-
-This package provides JavaScript APIs for several engines.
-
-## Package Targets
-* JavaScipt - common protocols
-* V8 - google's v8 engine wrapper
+# V8
 
 ## Package.swift
 
 ```swift
-.package(url: "https://github.com/tris-foundation/javascript.git", .branch("v8"))
+.package(url: "https://github.com/JavaScriptKit/V8.git", .branch("master"))
 ```
 
 ## Usage
