@@ -49,7 +49,7 @@ extern "C" {
     void* initialize(const char *exec_path) {
         V8::InitializeICUDefaultLocation(exec_path);
         v8::V8::InitializeExternalStartupData(exec_path);
-        auto platform = platform::CreateDefaultPlatform();
+        auto platform = platform::NewDefaultPlatform().release();
         V8::InitializePlatform(platform);
         V8::Initialize();
         return platform;
@@ -140,9 +140,10 @@ extern "C" {
         delete reinterpret_cast<Global<Value>*>(pointer);
     }
 
-    int64_t valueToInt(void* isolate, void* value) {
+    int64_t valueToInt(void* isolatePtr, void* value) {
+        auto isolate = reinterpret_cast<Isolate*>(isolatePtr);
         GlobalValue scoped(isolate, value);
-        return scoped->ToInteger()->IntegerValue();
+        return scoped->IntegerValue(isolate->GetCurrentContext()).ToChecked();
     }
 
     int getUtf8StringLength(void* isolatePtr, void* value) {
@@ -194,7 +195,8 @@ extern "C" {
     // MARK: functions
 
     static void callback(const v8::FunctionCallbackInfo<v8::Value>& args) {
-        int32_t id = args.Data()->Int32Value();
+        auto context = args.GetIsolate()->GetCurrentContext();
+        int32_t id = args.Data()->Int32Value(context).ToChecked();
 
         Isolate* isolate = args.GetIsolate();
         HandleScope scope(isolate);
@@ -222,7 +224,7 @@ extern "C" {
         auto name = String::NewFromUtf8(isolate, namePtr);
         auto functionTemplate = FunctionTemplate::New(isolate, callback, data);
         auto prototype = Local<Object>::Cast(context->Global()->GetPrototype());
-        prototype->Set(name, functionTemplate->GetFunction());
+        prototype->Set(name, functionTemplate->GetFunction(context).ToLocalChecked());
     }
 
     void setReturnValueUndefined(void* isolatePtr, void* returnValuePtr) {
@@ -269,7 +271,7 @@ extern "C" {
         Isolate::Scope isolate_scope(isolate);
         HandleScope handle_scope(isolate);
 
-        auto object = value->Get(isolate)->ToObject();
+        auto object = value->Get(isolate)->ToObject(isolate->GetCurrentContext()).ToLocalChecked();
         auto context = isolate->GetEnteredContext();
         auto key = String::NewFromUtf8(isolate, keyPtr);
 
