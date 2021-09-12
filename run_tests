@@ -1,0 +1,13 @@
+#!/bin/bash
+
+set -e
+
+swift build \
+ -Xcc "-I/opt/homebrew/include" \
+ -Xcc "-DV8_COMPRESS_POINTERS" \
+ -Xlinker "-L/opt/homebrew/lib"
+
+export DYLD_LIBRARY_PATH=/Library/Developer/Toolchains/swift-latest.xctoolchain/usr/lib/swift/macosx
+
+.build/debug/Tests/V8/JavaScript
+.build/debug/Tests/V8/JSValue

@@ -17,13 +17,29 @@ let package = Package(
             dependencies: []),
         .target(
             name: "V8",
-            dependencies: ["CV8", "Platform", "JavaScript"]),
-        .testTarget(
-            name: "V8Tests",
-            dependencies: ["Test", "V8"]),
+            dependencies: ["CV8", "Platform", "JavaScript"])
     ],
     cxxLanguageStandard: .cxx11
 )
+
+// MARK: - tests
+
+testTarget("V8") { test in
+    test("JavaScript")
+    test("JSValue")
+}
+
+func testTarget(_ target: String, task: ((String) -> Void) -> Void) {
+    task { test in addTest(target: target, name: test) }
+}
+
+func addTest(target: String, name: String) {
+    package.targets.append(
+        .executableTarget(
+            name: "Tests/\(target)/\(name)",
+            dependencies: ["Test", "V8"],
+            path: "Tests/\(target)/\(name)"))
+}
 
 // MARK: - custom package source
 
