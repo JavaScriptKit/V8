@@ -33,8 +33,12 @@ public class JSContext {
     }
 }
 
-struct JSError: Error, CustomStringConvertible {
+struct JSError: Error, Equatable, CustomStringConvertible {
     let description: String
+
+    init(_ description: String) {
+        self.description = description
+    }
 }
 
 extension JSContext: JavaScript.JSContext {
@@ -46,7 +50,7 @@ extension JSContext: JavaScript.JSContext {
                 fatalError("exception pointer is nil")
             }
             let value = JSValue(isolate: isolate, pointer: exception)
-            throw JSError(description: value.description)
+            throw JSError(value.description)
         }
         return JSValue(isolate: isolate, pointer: pointer)
     }

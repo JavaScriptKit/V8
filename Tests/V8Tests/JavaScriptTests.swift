@@ -4,17 +4,16 @@ import Test
 final class JavaScriptTests: TestCase {
     func testEvaluate() {
         let context = JSContext()
-        assertNoThrow(try context.evaluate("40 + 2"))
+        _ = try context.evaluate("40 + 2")
     }
 
     func testException() {
         let context = JSContext()
-        assertThrowsError(try context.evaluate("x()")) { error in
-            assertEqual("\(error)", "ReferenceError: x is not defined")
+        expect(throws: JSError("ReferenceError: x is not defined")) {
+            try context.evaluate("x()")
         }
-
-        assertThrowsError(try context.evaluate("{")) { error in
-            assertEqual("\(error)", "SyntaxError: Unexpected end of input")
+        expect(throws: JSError("SyntaxError: Unexpected end of input")) {
+            try context.evaluate("{")
         }
     }
 
@@ -25,7 +24,7 @@ final class JavaScriptTests: TestCase {
                 return .string("success")
             }
             let result = try context.evaluate("test()")
-            assertEqual(try result.toString(), "success")
+            expect(try result.toString() == "success")
         } catch {
             fail(String(describing: error))
         }
@@ -39,31 +38,31 @@ final class JavaScriptTests: TestCase {
                 return .undefined
             }
             let undefinedResult = try context.evaluate("testUndefined()")
-            assertTrue(undefinedResult.isUndefined)
+            expect(undefinedResult.isUndefined)
 
             try context.createFunction(name: "testNull") {
                 return .null
             }
             let nullResult = try context.evaluate("testNull()")
-            assertTrue(nullResult.isNull)
+            expect(nullResult.isNull)
 
             try context.createFunction(name: "testBool") {
                 return .bool(true)
             }
             let boolResult = try context.evaluate("testBool()")
-            assertTrue(boolResult.isBool)
+            expect(boolResult.isBool)
 
             try context.createFunction(name: "testNumber") {
                 return .number(3.14)
             }
             let numberResult = try context.evaluate("testNumber()")
-            assertTrue(numberResult.isNumber)
+            expect(numberResult.isNumber)
 
             try context.createFunction(name: "testString") {
                 return .string("success")
             }
             let stringResult = try context.evaluate("testString()")
-            assertTrue(stringResult.isString)
+            expect(stringResult.isString)
         } catch {
             fail(String(describing: error))
         }
@@ -79,8 +78,8 @@ final class JavaScriptTests: TestCase {
                 return .string("captured")
             }
             let result = try context.evaluate("test()")
-            assertTrue(captured)
-            assertEqual("\(result)", "captured")
+            expect(captured)
+            expect("\(result)" == "captured")
         } catch {
             fail(String(describing: error))
         }
@@ -90,9 +89,9 @@ final class JavaScriptTests: TestCase {
         do {
             let context = JSContext()
             try context.createFunction(name: "test") { (arguments) -> Void in
-                assertEqual(arguments.count, 2)
-                assertEqual(try arguments.first?.toString(), "one")
-                assertEqual(try arguments.last?.toInt(), 42)
+                expect(arguments.count == 2)
+                expect(try arguments.first?.toString() == "one")
+                expect(try arguments.last?.toInt() == 42)
             }
             try context.evaluate("test('one', 42)")
         } catch {
@@ -104,13 +103,13 @@ final class JavaScriptTests: TestCase {
         do {
             let context = JSContext()
             try context.evaluate("result = 'success'")
-            assertEqual(try context.evaluate("result").toString(), "success")
+            expect(try context.evaluate("result").toString() == "success")
 
             try context.createFunction(name: "test") { (arguments) -> Value in
                 return .string("test ok")
             }
 
-            assertEqual(try context.evaluate("result").toString(), "success")
+            expect(try context.evaluate("result").toString() == "success")
         } catch {
             fail(String(describing: error))
         }
@@ -121,13 +120,15 @@ final class JavaScriptTests: TestCase {
             let context = JSContext()
             try context.evaluate("test = 'hello'")
             let result = try context.evaluate("test")
-            assertEqual(try result.toString(), "hello")
+            expect(try result.toString() ==  "hello")
         } catch {
             fail(String(describing: error))
             return
         }
 
         let context = JSContext()
-        assertThrowsError(try context.evaluate("test"))
+        expect(throws: JSError("test is not defined")) {
+            try context.evaluate("test")
+        }
     }
 }
