@@ -7,13 +7,14 @@ test.case("evaluate") {
 }
 
 test.case("exception") {
-    let context = JSContext()
-    expect(throws: JSError("ReferenceError: x is not defined")) {
-        try context.evaluate("x()")
-    }
-    expect(throws: JSError("SyntaxError: Unexpected end of input")) {
-        try context.evaluate("{")
-    }
+    fail("FIXME: v9.3 crash")
+    // let context = JSContext()
+    // expect(throws: JSError("ReferenceError: x is not defined")) {
+    //     try context.evaluate("x()")
+    // }
+    // expect(throws: JSError("SyntaxError: Unexpected end of input")) {
+    //     try context.evaluate("{")
+    // }
 }
 
 test.case("function") {
@@ -95,17 +96,18 @@ test.case("persistent context") {
 }
 
 test.case("sandbox") {
-    try {
-        let context = JSContext()
-        try context.evaluate("test = 'hello'")
-        let result = try context.evaluate("test")
-        expect(try result.toString() ==  "hello")
-    }()
-
-    let context = JSContext()
-    expect(throws: JSError("test is not defined")) {
-        try context.evaluate("test")
-    }
+    fail("FIXME: v9.3 crash")
+    // try {
+    //     let context = JSContext()
+    //     try context.evaluate("test = 'hello'")
+    //     let result = try context.evaluate("test")
+    //     expect(try result.toString() ==  "hello")
+    // }()
+    //
+    // let context = JSContext()
+    // expect(throws: JSError("test is not defined")) {
+    //     try context.evaluate("test")
+    // }
 }
 
 test.run()
