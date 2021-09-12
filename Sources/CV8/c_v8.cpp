@@ -114,7 +114,7 @@ extern "C" {
         HandleScope handle_scope(isolate);
         Local<Context> context = globalContext->Get(isolate);
         Context::Scope context_scope(context);
-        Local<String> source = String::NewFromUtf8(isolate, scriptPtr);
+        Local<String> source = String::NewFromUtf8(isolate, scriptPtr).ToLocalChecked();
         MaybeLocal<Script> maybeScript = Script::Compile(context, source);
 
         if(maybeScript.IsEmpty()) {
@@ -224,7 +224,7 @@ extern "C" {
         auto name = String::NewFromUtf8(isolate, namePtr);
         auto functionTemplate = FunctionTemplate::New(isolate, callback, data);
         auto prototype = Local<Object>::Cast(context->Global()->GetPrototype());
-        prototype->Set(name, functionTemplate->GetFunction(context).ToLocalChecked());
+        auto result = prototype->Set(context, name.ToLocalChecked(), functionTemplate->GetFunction(context).ToLocalChecked());
     }
 
     void setReturnValueUndefined(void* isolatePtr, void* returnValuePtr) {
@@ -252,7 +252,7 @@ extern "C" {
         auto returnValue = reinterpret_cast<ReturnValue<Value>*>(returnValuePtr);
 
         auto string = String::NewFromUtf8(isolate, utf8);
-        returnValue->Set(string);
+        returnValue->Set(string.ToLocalChecked());
     }
 
     void setReturnValueEmptyString(void* isolatePtr, void* returnValuePtr) {
@@ -272,10 +272,10 @@ extern "C" {
         HandleScope handle_scope(isolate);
 
         auto object = value->Get(isolate)->ToObject(isolate->GetCurrentContext()).ToLocalChecked();
-        auto context = isolate->GetEnteredContext();
+        auto context = isolate->GetEnteredOrMicrotaskContext();
         auto key = String::NewFromUtf8(isolate, keyPtr);
 
-        auto result = object->GetRealNamedProperty(context, key);
+        auto result = object->GetRealNamedProperty(context, key.ToLocalChecked());
 
         if (result.IsEmpty()) {
             if (exception != nullptr) {
