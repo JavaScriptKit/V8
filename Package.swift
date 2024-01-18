@@ -18,7 +18,18 @@ let package = Package(
     targets: [
         .target(
             name: "CV8",
-            dependencies: []),
+            dependencies: [],
+            cSettings: [
+                .unsafeFlags(
+                    ["-I/opt/homebrew/include"],
+                    .when(platforms: [.macOS])
+                ),
+                .unsafeFlags([
+                    "-DV8_ENABLE_SANDBOX",
+                    "-DV8_COMPRESS_POINTERS"
+                ]),
+            ],
+            swiftSettings: swift6),
         .target(
             name: "V8",
             dependencies: [
@@ -27,7 +38,7 @@ let package = Package(
                 .product(name: "JavaScript", package: "javascript"),
             ])
     ],
-    cxxLanguageStandard: .cxx11
+    cxxLanguageStandard: .cxx17
 )
 
 // MARK: - tests

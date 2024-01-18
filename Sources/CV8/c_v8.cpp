@@ -57,7 +57,7 @@ extern "C" {
 
     void dispose(void* platform) {
         V8::Dispose();
-        V8::ShutdownPlatform();
+        V8::DisposePlatform();
         delete reinterpret_cast<Platform*>(platform);;
     }
 

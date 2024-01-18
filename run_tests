@@ -5,6 +5,7 @@ set -e
 swift build \
  -Xcc "-I/opt/homebrew/include" \
  -Xcc "-DV8_COMPRESS_POINTERS" \
+ -Xcc "-DV8_ENABLE_SANDBOX" \
  -Xlinker "-L/opt/homebrew/lib"
 
 export DYLD_LIBRARY_PATH=/Library/Developer/Toolchains/swift-latest.xctoolchain/usr/lib/swift/macosx
