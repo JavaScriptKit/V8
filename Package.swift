@@ -36,10 +36,20 @@ let package = Package(
                 .target(name: "CV8"),
                 .product(name: "Platform", package: "platform"),
                 .product(name: "JavaScript", package: "javascript"),
-            ])
+            ],
+            swiftSettings: swift6)
     ],
     cxxLanguageStandard: .cxx17
 )
+
+let swift6: [SwiftSetting] = [
+    .enableUpcomingFeature("ConciseMagicFile"),
+    .enableUpcomingFeature("ForwardTrailingClosures"),
+    .enableUpcomingFeature("ExistentialAny"),
+    .enableUpcomingFeature("StrictConcurrency"),
+    .enableUpcomingFeature("ImplicitOpenExistentials"),
+    .enableUpcomingFeature("BareSlashRegexLiterals"),
+]
 
 // MARK: - tests
 
@@ -60,7 +70,8 @@ func addTest(target: String, name: String) {
                 .target(name: "V8"),
                 .product(name: "Test", package: "test"),
             ],
-            path: "Tests/\(target)/\(name)"))
+            path: "Tests/\(target)/\(name)",
+            swiftSettings: swift6))
 }
 
 // MARK: - custom package source
