@@ -21,7 +21,11 @@ let package = Package(
             dependencies: []),
         .target(
             name: "V8",
-            dependencies: ["CV8", "Platform", "JavaScript"])
+            dependencies: [
+                .target(name: "CV8"),
+                .product(name: "Platform", package: "platform"),
+                .product(name: "JavaScript", package: "javascript"),
+            ])
     ],
     cxxLanguageStandard: .cxx11
 )
@@ -41,7 +45,10 @@ func addTest(target: String, name: String) {
     package.targets.append(
         .executableTarget(
             name: "Tests/\(target)/\(name)",
-            dependencies: ["Test", "V8"],
+            dependencies: [
+                .target(name: "V8"),
+                .product(name: "Test", package: "test"),
+            ],
             path: "Tests/\(target)/\(name)"))
 }
 
@@ -61,7 +68,7 @@ extension Package.Dependency {
 
         var baseUrl: String {
             switch self {
-            case .local: return "../"
+            case .local: return "../../swiftstack/"
             case .remote: return "https://swiftstack.io/"
             case .github: return "https://github.com/swiftstack/"
             }
@@ -87,6 +94,6 @@ extension Package.Dependency {
     static func package(name: String, source: Source) -> Package.Dependency {
         return source == .local
             ? .package(name: name, path: source.url(for: name))
-            : .package(name: name, url: source.url(for: name), .branch("dev"))
+            : .package(url: source.url(for: name), branch: "dev")
     }
 }
