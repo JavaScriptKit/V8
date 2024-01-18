@@ -65,6 +65,10 @@ extension JSValue {
 
 extension JSValue: CustomStringConvertible {
     public var description: String {
-        return try! toString()
+        do {
+            return try toString()
+        } catch {
+            return .init(String(describing: error))
+        }
     }
 }

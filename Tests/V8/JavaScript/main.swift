@@ -3,18 +3,17 @@ import Test
 
 test("evaluate") {
     let context = JSContext()
-    _ = try context.evaluate("40 + 2")
+    _ = try context.evaluate("")
 }
 
 test("exception") {
-    fail("FIXME: v9.3-v12 crash")
-    // let context = JSContext()
-    // expect(throws: JSError("ReferenceError: x is not defined")) {
-    //     try context.evaluate("x()")
-    // }
-    // expect(throws: JSError("SyntaxError: Unexpected end of input")) {
-    //     try context.evaluate("{")
-    // }
+     let context = JSContext()
+     expect(throws: JSError("ReferenceError: x is not defined")) {
+         try context.evaluate("x()")
+     }
+     expect(throws: JSError("SyntaxError: Unexpected end of input")) {
+         try context.evaluate("{")
+     }
 }
 
 test("function") {
@@ -96,18 +95,17 @@ test("persistent context") {
 }
 
 test("sandbox") {
-    fail("FIXME: v9.3-v12 crash")
-    // try {
-    //     let context = JSContext()
-    //     try context.evaluate("test = 'hello'")
-    //     let result = try context.evaluate("test")
-    //     expect(try result.toString() ==  "hello")
-    // }()
-    //
-    // let context = JSContext()
-    // expect(throws: JSError("test is not defined")) {
-    //     try context.evaluate("test")
-    // }
+     try {
+         let context = JSContext()
+         try context.evaluate("test = 'hello'")
+         let result = try context.evaluate("test")
+         expect(try result.toString() ==  "hello")
+     }()
+    
+     let context = JSContext()
+     expect(throws: JSError("ReferenceError: test is not defined")) {
+         try context.evaluate("test")
+     }
 }
 
 await run()

@@ -30,7 +30,7 @@ extern "C" {
     // called from JSValue's destructor
     void disposeValue(void * _Nonnull pointer);
 
-    void * _Nullable evaluate(void * _Nonnull isolatePtr, void * _Nonnull contextPtr, const char* _Nonnull scriptPtr, void * _Nullable* _Nullable exception);
+    void * _Nullable evaluate(void * _Nonnull isolatePtr, void * _Nonnull contextPtr, const char* _Nonnull scriptPtr, void * _Nullable* _Nullable exception, size_t* _Nullable exceptionCount);
 
     int getUtf8StringLength(void * _Nonnull isolatePtr, void * _Nonnull valuePtr);
     void copyUtf8String(void * _Nonnull isolatePtr, void * _Nonnull valuePtr, void * _Nonnull buffer, int count);

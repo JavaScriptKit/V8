@@ -73,7 +73,7 @@ extern "C" {
     }
 
     // MARK: shared with node
-    
+
     void* createTemplate(void* isolatePtr) {
         auto isolate = reinterpret_cast<Isolate*>(isolatePtr);
         Locker isolateLocker(isolate);
@@ -104,7 +104,7 @@ extern "C" {
         delete reinterpret_cast<Global<Context>*>(context);
     }
 
-    void* evaluate(void* isolatePtr, void* contextPtr, const char* scriptPtr, void** exception) {
+    void* evaluate(void* isolatePtr, void* contextPtr, const char* scriptPtr, void** exceptionPrt, size_t* exceptionSize) {
         auto isolate = reinterpret_cast<Isolate*>(isolatePtr);
         auto globalContext = reinterpret_cast<Global<Context>*>(contextPtr);
 
@@ -118,8 +118,12 @@ extern "C" {
         MaybeLocal<Script> maybeScript = Script::Compile(context, source);
 
         if(maybeScript.IsEmpty()) {
-            if (exception != nullptr) {
-                *exception = new Global<Value>(isolate, trycatch.Exception());
+            if (exceptionPrt != nullptr) {
+                v8::Local<v8::Value> exception = trycatch.Exception();
+                v8::String::Utf8Value exception_str(isolate, exception);
+                *exceptionSize = exception_str.length();
+                *exceptionPrt = malloc(*exceptionSize);
+                memcpy(*exceptionPrt, *exception_str, *exceptionSize);
             }
             return nullptr;
         }
@@ -128,11 +132,16 @@ extern "C" {
         MaybeLocal<Value> result = script->Run(context);
 
         if (result.IsEmpty()) {
-            if (exception != nullptr) {
-                *exception = new Global<Value>(isolate, trycatch.Exception());
+            if (exceptionPrt != nullptr) {
+                v8::Local<v8::Value> exception = trycatch.Exception();
+                v8::String::Utf8Value exception_str(isolate, exception);
+                *exceptionSize = exception_str.length();
+                *exceptionPrt = malloc(*exceptionSize);
+                memcpy(*exceptionPrt, *exception_str, *exceptionSize);
             }
             return nullptr;
         }
+
         return new Global<Value>(isolate, result.ToLocalChecked());
     }
 

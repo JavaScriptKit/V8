@@ -45,12 +45,16 @@ extension JSContext: JavaScript.JSContext {
     @discardableResult
     public func evaluate(_ script: String) throws -> JSValue {
         var exception: UnsafeMutableRawPointer?
-        guard let pointer = CV8.evaluate(isolate, context, script, &exception) else {
-            guard let exception = exception else {
+        var count: Int = 0
+        guard 
+            let pointer =
+                CV8.evaluate(isolate, context, script, &exception, &count)
+        else {
+            guard let exception else {
                 fatalError("exception pointer is nil")
             }
-            let value = JSValue(isolate: isolate, pointer: exception)
-            throw JSError(value.description)
+            let buffer = UnsafeRawBufferPointer(start: exception, count: count)
+            throw JSError(String(decoding: buffer, as: UTF8.self))
         }
         return JSValue(isolate: isolate, pointer: pointer)
     }
