@@ -18,8 +18,8 @@ extension JSContext {
 
     public func createFunction(
         name: String,
-        _ body: @escaping ([JSValue]) throws -> Value) throws
-    {
+        _ body: @escaping ([JSValue]) throws -> Value
+    ) throws {
         _ = swiftCallback
         let id = generateId()
         CV8.createFunction(isolate, context, name, id)
@@ -28,8 +28,8 @@ extension JSContext {
 
     public func createFunction(
         name: String,
-        _ body: @escaping ([JSValue]) throws -> Void) throws
-    {
+        _ body: @escaping ([JSValue]) throws -> Void
+    ) throws {
         try createFunction(name: name) { arguments -> Value in
             try body(arguments)
             return .undefined
@@ -38,8 +38,8 @@ extension JSContext {
 
     public func createFunction(
         name: String,
-        _ body: @escaping () throws -> Value) throws
-    {
+        _ body: @escaping () throws -> Value
+    ) throws {
         return try createFunction(name: name) { _ in
             return try body()
         }
@@ -47,8 +47,8 @@ extension JSContext {
 
     public func createFunction(
         name: String,
-        _ body: @escaping () throws -> Void) throws
-    {
+        _ body: @escaping () throws -> Void
+    ) throws {
         try createFunction(name: name) { _ in
             try body()
         }
